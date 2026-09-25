@@ -2,7 +2,8 @@ import express from "express";
 import { getInventoryController,
     createInventoryController,
     getInventoryByIdController,
-    updateInventoryController
+    updateInventoryController,
+    createInventoryTransactionController,
 
  } from "../controllers/inventoryController.js";
 
@@ -13,5 +14,6 @@ router.get("/", getInventoryController);
 router.post("/", createInventoryController);
 router.get("/:id", getInventoryByIdController);
 router.patch("/:id", updateInventoryController);
+router.post("/:id/transactions", createInventoryTransactionController);
 
 export default router;

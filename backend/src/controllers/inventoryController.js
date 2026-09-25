@@ -1,5 +1,6 @@
 import { getInventory, createInventory, 
     getInventoryById, updateInventory,
+    createInventoryTransaction
 
 
  } from "../services/inventoryService.js";
@@ -47,9 +48,29 @@ const updateInventoryController = async (req,res) => {
 
 }
 
+const createInventoryTransactionController = async (req,res) => {
+
+    const {id} = req.params;
+
+    const inventoryId = id;
+
+    const { type, quantity, reference} = req.body;
+
+    const result = await createInventoryTransaction(
+        inventoryId,
+        type,
+        quantity,
+        reference
+    );
+
+    return res.status(200).json(result);
+
+}
+
 export {
     getInventoryController,
     createInventoryController,
     getInventoryByIdController,
     updateInventoryController,
+    createInventoryTransactionController,
 }
