@@ -1,4 +1,5 @@
 import pool from "../../config/db.js";
+import AppError from "../utils/AppError.js";
 
 
 // get all products
@@ -37,8 +38,13 @@ const getProductById = async (id) => {
          WHERE id = $1`,
         [id]
     );
-    return result.rows[0];
+    const product = result.rows[0];
 
+    if (!product) {
+        throw new AppError("Product not found", 404);
+    }
+
+    return product;
 }
 
 const updateProduct = async (name, unit, lowStockThreshold, id) => {

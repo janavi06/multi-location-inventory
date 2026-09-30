@@ -6,13 +6,29 @@ import { getLocationsController, createLocationController,
 
  } from "../controllers/locationController.js";
 
+ import { createLocationController } from "../controllers/locationController.js";
+import { validateCreateLocation,
+    validateUpdateLocation
+ } from "../middleware/locationValidation.js";
+
+ import { valdiateId } from "../middleware/idValidation.js";
+
 const router = express.Router();
 
 router.get("/",getLocationsController);
-router.post("/", createLocationController);
-router.get("/:id", getLocationByIdController );
-router.patch("/:id",updateLocationController);
-router.delete("/:id", deactivateLocationController);
+
+router.post("/", validateCreateLocation, 
+    createLocationController);
+
+router.get("/:id", valdiateId,
+     getLocationByIdController );
+
+router.patch("/:id", valdiateId, validateCreateLocation,
+    updateLocationController);
+
+
+router.delete("/:id", valdiateId,
+    deactivateLocationController);
 
 export default router;
 

@@ -7,13 +7,28 @@ import { getInventoryController,
 
  } from "../controllers/inventoryController.js";
 
+ import { validateCreateInventory,
+    validateUpdateInventory
+  } from "../middleware/inventoryValidation.js";
+
+  import { valdiateId } from "../middleware/idValidation.js";
+
 
 const router = express.Router();
 
 router.get("/", getInventoryController);
-router.post("/", createInventoryController);
-router.get("/:id", getInventoryByIdController);
-router.patch("/:id", updateInventoryController);
-router.post("/:id/transactions", createInventoryTransactionController);
+
+router.post("/", validateCreateInventory, 
+    createInventoryController);
+
+router.get("/:id", valdiateId,
+    getInventoryByIdController);
+
+router.patch("/:id", valdiateId,
+     validateUpdateInventory,
+     updateInventoryController);
+
+router.post("/:id/transactions", valdiateId,
+    createInventoryTransactionController);
 
 export default router;

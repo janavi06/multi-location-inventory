@@ -3,6 +3,7 @@ import { getProducts, createProduct,
     deactivateProduct
 
  } from "../services/productService.js";
+ import asyncHandler from "../utils/asyncHandler.js";
 
 
 const getProductsController = async (req, res) => {
@@ -26,14 +27,13 @@ const createProductController = async (req,res) => {
     res.status(201).json(product);
 }
 
-const getProductByIdController = async (req,res) => {
-    const {id} = req.params;
+const getProductByIdController = asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
     const product = await getProductById(id);
 
     res.status(200).json(product);
-
-}
+});
 
 const updateProductController = async (req, res) => {
     const {id} = req.params;

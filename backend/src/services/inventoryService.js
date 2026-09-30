@@ -1,4 +1,5 @@
-import pool from "../../config/db.js"
+import pool from "../../config/db.js";
+import AppError from "../utils/AppError.js";
 
 
 const getInventory = async () => {
@@ -103,9 +104,24 @@ const createInventoryTransaction = async (
     );
     const inventory = result.rows[0];
 
+    if (!inventory){
+        throw new AppError("Inventory not found", 404);
+    }
+
     const currentQuantity = Number(inventory.quantity);
 
     let delta;
+
+    const allowedTypes = [
+    "PURCHASE",
+    "RETURN",
+    "SALE",
+    "DAMAGE"
+];
+
+if (!allowedTypes.includes(type)) {
+    throw new AppError("Invalid transaction type", 400);
+}
 
     //purchase, return, sale, damage
     if (type === "PURCHASE"){
@@ -122,7 +138,7 @@ const createInventoryTransaction = async (
     const newQuantity = currentQuantity + delta;
 
     if (newQuantity < 0){
-        throw new Error("Insufficient stock");
+        throw new AppError("Insufficient stock",400);
     }
 
     await client.query(

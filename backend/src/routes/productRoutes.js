@@ -6,17 +6,27 @@ import {getProductsController,
     deactivateProductController
 } from "../controllers/productController.js"
 
+import { validateCreateProduct,
+    validateUpdateProduct
+ } from "../middleware/productValidation.js";
+
+ import { valdiateId } from "../middleware/idValidation.js";
+
 const router = express.Router();
 
 router.get("/", getProductsController);
 
-router.post("/", createProductController);
+router.post("/", validateCreateProduct, createProductController);
 
-router.get("/:id", getProductByIdController);
+router.get("/:id", valdiateId,
+     getProductByIdController);
 
-router.patch("/:id", updateProductController);
+router.patch("/:id", valdiateId, 
+    validateCreateProduct,
+     updateProductController);
 
-router.delete("/:id", deactivateProductController);
+router.delete("/:id", valdiateId,
+     deactivateProductController);
 
 
 export default router; 
