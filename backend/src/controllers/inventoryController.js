@@ -7,7 +7,9 @@ import { getInventory, createInventory,
 
 const getInventoryController = async (req,res) => {
 
-    const inventory = await getInventory();
+    const locationId = req.query.locationId;
+
+    const inventory = await getInventory(locationId);
 
     res.status(200).json(inventory);
 }
@@ -28,7 +30,9 @@ const getInventoryByIdController = async (req,res) =>{
     const {id} = req.params;
 
     const inventory = await getInventoryById(
-        id
+        id,
+        req.user.locationId,
+        req.user.role
     )
     res.status(200).json(inventory);
 
@@ -41,7 +45,9 @@ const updateInventoryController = async (req,res) => {
 
     const inventory = await updateInventory(
         quantity,
-        id
+        id,
+        req.user.locationId,
+        req.user.role
     );
 
     res.status(200).json(inventory);
@@ -60,7 +66,9 @@ const createInventoryTransactionController = async (req,res) => {
         inventoryId,
         type,
         quantity,
-        reference
+        reference,
+        req.user.locationId,
+        req.user.role
     );
 
     return res.status(200).json(result);

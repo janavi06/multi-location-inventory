@@ -10,7 +10,9 @@ const createStockTransferController = async (req,res) => {
     const result = await createStockTransfer(
         sourceInventoryId,
         destinationInventoryId,
-        quantity
+        quantity,
+        req.user.locationId,
+        req.user.role
     )
 
     res.status(201).json(result);

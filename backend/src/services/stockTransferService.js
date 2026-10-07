@@ -3,7 +3,9 @@ import pool from "../../config/db";
 const createStockTransfer = async (
     sourceInventoryId,
     destinationInventoryId,
-    quantity
+    quantity,
+    userLocationId,
+    userRole
 
 ) => {
     const client = await pool.connect();
@@ -12,40 +14,49 @@ const createStockTransfer = async (
         await client.query("BEGIN");
 
         const result = await client.query(
-             `SELECT
+            `SELECT
         id,
         product_id,
         location_id,
         quantity
      FROM inventory
      WHERE id IN ($1, $2)
+     ORDER BY id ASC
      FOR UPDATE;`,
-     [sourceInventoryId, destinationInventoryId]
+            [sourceInventoryId, destinationInventoryId]
         );
 
         const rows = result.rows;
 
         const sourceInventory = rows.find(
-            row => row.id === sourceInventoryId
-        )
+            row => Number(row.id) === Number(sourceInventoryId)
+        );
 
         const destinationInventory = rows.find(
-            row => row.id === destinationInventoryId
-        )
+            row => Number(row.id) === Number(destinationInventoryId)
+        );
 
-        if (sourceInventory == null || destinationInventory == null){
-            throw new Error("Inventory not found");
+        if (sourceInventory == null || destinationInventory == null) {
+            throw new AppError("Inventory not found", 404);
         }
 
-        if (sourceInventory.product_id != destinationInventory.product_id){
-            throw new Error(`Source and destination 
-                must contain the same product
-                `);
+        if (
+            userRole !== "ADMIN" &&
+            Number(sourceInventory.location_id) !== Number(userLocationId)
+        ) {
+            throw new AppError("Access denied for this location", 403);
+        }
+
+        if (sourceInventory.product_id != destinationInventory.product_id) {
+            throw new AppError(
+                "Source and destination must contain the same product",
+                400
+            );
 
         }
 
-        if (quantity <= 0){
-            throw new Error("Quantity must be greater than zero")
+        if (quantity <= 0) {
+            throw new AppError("Quantity must be greater than zero", 400)
         }
 
         const currentSourceQuantity = Number(
@@ -57,28 +68,32 @@ const createStockTransfer = async (
         );
 
         if (currentSourceQuantity < quantity) {
-           throw new Error("Insufficient stock");
+            throw new AppError("Insufficient stock", 400);
         }
 
 
         const newSourceQuantity =
-         currentSourceQuantity - quantity;
+            currentSourceQuantity - quantity;
 
-        const newDestinationQuantity = 
-        currentDestinationQuantity + quantity;
+        const newDestinationQuantity =
+            currentDestinationQuantity + quantity;
 
         await client.query(
             `UPDATE inventory
-            SET quantity = $1
-            WHERE id = $2;
+SET
+    quantity = $1,
+    updated_at = NOW()
+WHERE id = $2;
             `,
             [newSourceQuantity, sourceInventory.id]
         );
 
         await client.query(
             `UPDATE inventory
-            SET quantity = $1
-            WHERE id = $2;
+SET
+    quantity = $1,
+    updated_at = NOW()
+WHERE id = $2;
             `,
             [newDestinationQuantity, destinationInventory.id]
         )
@@ -101,14 +116,14 @@ const createStockTransfer = async (
         new_quantity,
         reference,
         created_at;`,
-        [sourceInventory.id, "TRANSFER_OUT",
-            quantity, currentSourceQuantity,
-            newSourceQuantity
-        ]
+            [sourceInventory.id, "TRANSFER_OUT",
+                quantity, currentSourceQuantity,
+                newSourceQuantity
+            ]
         );
 
         const destinationTransactionResult = await client.query(
-             `INSERT INTO inventory_transactions (
+            `INSERT INTO inventory_transactions (
         inventory_id,
         type,
         quantity,
@@ -125,10 +140,10 @@ const createStockTransfer = async (
         new_quantity,
         reference,
         created_at;`,
-        [destinationInventory.id, "TRANSFER_IN",
-            quantity, currentDestinationQuantity,
-            newDestinationQuantity
-        ]
+            [destinationInventory.id, "TRANSFER_IN",
+                quantity, currentDestinationQuantity,
+                newDestinationQuantity
+            ]
         );
 
         const transferResult = await client.query(
@@ -147,13 +162,13 @@ const createStockTransfer = async (
         status,
         created_at,
         updated_at;`,
-        [sourceInventoryId, 
-            destinationInventoryId,
-            quantity,
-            "COMPLETED"
-        ]
+            [sourceInventoryId,
+                destinationInventoryId,
+                quantity,
+                "COMPLETED"
+            ]
         );
-         const transfer = transferResult.rows[0];
+        const transfer = transferResult.rows[0];
 
 
         await client.query("COMMIT");
@@ -170,7 +185,7 @@ const createStockTransfer = async (
             }
         }
 
-    } catch (error){
+    } catch (error) {
         await client.query("ROLLBACK");
         throw error;
     } finally {

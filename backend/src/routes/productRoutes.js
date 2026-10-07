@@ -10,23 +10,47 @@ import { validateCreateProduct,
     validateUpdateProduct
  } from "../middleware/productValidation.js";
 
- import { valdiateId } from "../middleware/idValidation.js";
+ import { validateId } from "../middleware/idValidation.js";
+
+ import authMiddleware from "../middleware/authMiddleware.js";
+import { requireRole } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getProductsController);
+router.get(
+    "/:id",
+    authMiddleware,
+    validateId,
+    getProductByIdController
+);
 
-router.post("/", validateCreateProduct, createProductController);
 
-router.get("/:id", valdiateId,
+router.post(
+    "/",
+    authMiddleware,
+    requireRole("ADMIN", "MANAGER"),
+    validateCreateProduct,
+    createProductController
+);
+router.get("/:id", validateId,
      getProductByIdController);
 
-router.patch("/:id", valdiateId, 
-    validateCreateProduct,
-     updateProductController);
+router.patch(
+    "/:id",
+    authMiddleware,
+    requireRole("ADMIN", "MANAGER"),
+    validateId,
+    validateUpdateProduct,
+    updateProductController
+);
 
-router.delete("/:id", valdiateId,
-     deactivateProductController);
+router.delete(
+    "/:id",
+    authMiddleware,
+    requireRole("ADMIN"),
+    validateId,
+    deactivateProductController
+);
 
 
 export default router; 
