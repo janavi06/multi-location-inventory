@@ -11,4 +11,4 @@ const valdiateId = (req,res,next) => {
     next();
 }
 
-export {valdiateId};
+export default valdiateId

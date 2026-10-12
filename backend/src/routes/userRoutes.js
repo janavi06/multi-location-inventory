@@ -6,7 +6,7 @@ import {
 } from "../controllers/userController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { requireRole } from "../middleware/roleMiddleware.js";
-import { validateId } from "../middleware/idValidation.js";
+import  validateId  from "../middleware/idValidation.js";
 import { validateUpdateUser } from "../middleware/userValidation.js";
 
 const router = express.Router();

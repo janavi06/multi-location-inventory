@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import productRouter from "./routes/productRoutes.js";
 import locationRouter from "./routes/locationRoutes.js";
 import inventoryRouter from "./routes/inventoryRoutes.js";
@@ -11,7 +12,12 @@ import syncRouter from "./routes/syncRoutes.js";
 
 const app = express();
 
+app.use(cors({
+    origin: "http://localhost:3000"
+}));
+
 app.use(express.json());
+
 app.use("/api/products", productRouter);
 app.use("/api/locations",locationRouter);
 app.use("/api/inventory", inventoryRouter);

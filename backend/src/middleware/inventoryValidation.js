@@ -1,71 +1,75 @@
 
 
-const validateCreateInventory = (req,res,next) => {
-    const {productId, locationId, quantity} = req.body;
 
-    if (!(Number.isInteger(productId) && productId > 0)){
+const validateCreateInventory = (req, res, next) => {
+    const { product_id, location_id, quantity } = req.body;
+
+    if (!(Number.isInteger(product_id) && product_id > 0)) {
         return res.status(400).json({
-            message: "productId must be a positive integer"
-        })
+            message: "product_id must be a positive integer"
+        });
     }
 
-      if (!(Number.isInteger(locationId) && locationId > 0)){
+    if (!(Number.isInteger(location_id) && location_id > 0)) {
         return res.status(400).json({
-            message: "locationId must be a positive integer"
-        })
+            message: "location_id must be a positive integer"
+        });
     }
 
-    if (!(Number.isFinite(quantity)) || quantity < 0){
+    if (!(Number.isFinite(quantity)) || quantity < 0) {
         return res.status(400).json({
-            message: "quantity must be non-negative number"
-        })
+            message: "quantity must be a non-negative number"
+        });
     }
 
     next();
-}
+};
 
-const validateUpdateInventory = (req,res,next) => {
-    const {
-        productId,
-        locationId,
-        quantity
-    } = req.body;
 
-    if (productId === undefined &&
-        locationId === undefined &&
-        quantity === undefined 
+
+const validateUpdateInventory = (req, res, next) => {
+    const { product_id, location_id, quantity } = req.body;
+
+    if (
+        product_id === undefined &&
+        location_id === undefined &&
+        quantity === undefined
     ) {
         return res.status(400).json({
-            message: "At least one field is requried for update"
-        })
+            message: "At least one field is required for update"
+        });
     }
 
-    if (productId !== undefined &&
-        (!(Number.isInteger(productId) && productId > 0))
-     ) {
+    if (
+        product_id !== undefined &&
+        !(Number.isInteger(product_id) && product_id > 0)
+    ) {
         return res.status(400).json({
-            message: "productId must be positive integer"
-        })
-     }
+            message: "product_id must be a positive integer"
+        });
+    }
 
-     if (locationId !== undefined &&
-        (!(Number.isInteger(locationId) && locationId > 0))
-     ) {
+    if (
+        location_id !== undefined &&
+        !(Number.isInteger(location_id) && location_id > 0)
+    ) {
         return res.status(400).json({
-            message: "locationId must be positive integer"
-        })
-     }
+            message: "location_id must be a positive integer"
+        });
+    }
 
-     if (quantity !== undefined && 
+    if (
+        quantity !== undefined &&
         (!Number.isFinite(quantity) || quantity < 0)
-     ){
+    ) {
         return res.status(400).json({
-            message: "quantity must be non-negative number"
-        })
-     }
+            message: "quantity must be a non-negative number"
+        });
+    }
 
-     next();
-}
+    next();
+};
+
 
 export {validateCreateInventory,
     validateUpdateInventory

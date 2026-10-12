@@ -8,12 +8,12 @@ import {
 
 } from "../controllers/inventoryController.js";
 
-import {
-    validateCreateInventory,
-    validateUpdateInventory
-} from "../middleware/inveinventoryRoutesntoryValidation.js";
-
-import { validateId } from "../middleware/idValidation.js";
+// import {
+//     validateCreateInventory,
+//     validateUpdateInventory
+// } from "../middleware/inveinventoryRoutesntoryValidation.js";
+import {validateCreateInventory, validateUpdateInventory } from "../middleware/inventoryValidation.js"
+import  validateId  from "../middleware/idValidation.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { requireRole } from "../middleware/roleMiddleware.js";
 import { requireLocation } from "../middleware/locationMiddleware.js";

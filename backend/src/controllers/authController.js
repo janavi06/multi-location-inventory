@@ -1,6 +1,6 @@
 import { loginUser, registerUser } from "../services/authService.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import pool from "../config/db.js";
+import pool from "../../config/db.js";
 import AppError from "../utils/AppError.js";
 
 const registerController = asyncHandler(async (req, res) => {
@@ -28,7 +28,7 @@ const loginController = asyncHandler(async (req,res) => {
         email,
         password
     );
-    return res.status(200).json(result);
+    return res.status(200).json(login);
 })
 
 const meController = asyncHandler(async (req,res) => {

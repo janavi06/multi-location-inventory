@@ -6,7 +6,7 @@ import AppError from "../utils/AppError.js";
 const getProducts = async () => {
 
     const result = await pool.query(
-        `SELECT id,name,sku,unit, low_stock_threshold,
+        `SELECT id,name,sku,unit, low_stock_threshold,price,
      is_active FROM products
      `
     )
@@ -15,17 +15,18 @@ const getProducts = async () => {
 }
 
 // create product
-const createProduct = async (name, sku, unit, lowStockThreshold) => {
+const createProduct = async (name, sku, unit, lowStockThreshold, price) => {
     const result = await pool.query(
         `INSERT INTO products (name,
            sku,
            unit,
-           low_stock_threshold
-        ) VALUES ($1, $2, $3, $4)
-        RETURNING id, name, sku, unit, low_stock_threshold,
+           low_stock_threshold,
+           price
+        ) VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, name, sku, unit, low_stock_threshold,price,
         is_active; 
         `,
-        [name, sku, unit, lowStockThreshold]
+        [name, sku, unit, lowStockThreshold, price]
     );
     return result.rows[0];
 }
@@ -33,7 +34,7 @@ const createProduct = async (name, sku, unit, lowStockThreshold) => {
 const getProductById = async (id) => {
 
     const result = await pool.query(
-        `SELECT id, name, sku, unit, low_stock_threshold, is_active
+        `SELECT id, name, sku, unit, low_stock_threshold, price, is_active
          FROM products
          WHERE id = $1`,
         [id]
@@ -47,18 +48,34 @@ const getProductById = async (id) => {
     return product;
 }
 
-const updateProduct = async (name, unit, lowStockThreshold, id) => {
+const updateProduct = async (
+    name,
+    unit,
+    lowStockThreshold,
+    price,
+    id
+) => {
     const result = await pool.query(
         `UPDATE products
-SET name = $1,
-    unit = $2,
-    low_stock_threshold = $3
-WHERE id = $4
-RETURNING id, name, sku, unit, low_stock_threshold, is_active;`,
-        [name, unit, lowStockThreshold, id]
-    )
+        SET
+            name = $1,
+            unit = $2,
+            low_stock_threshold = $3,
+            price = $4
+        WHERE id = $5
+        RETURNING
+            id,
+            name,
+            sku,
+            unit,
+            low_stock_threshold,
+            price,
+            is_active`,
+        [name, unit, lowStockThreshold, price, id]
+    );
+
     return result.rows[0];
-}
+};
 
 const deactivateProduct = async (id) => {
     const result = await pool.query(

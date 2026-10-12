@@ -29,6 +29,8 @@ const validateCreateStockTransfer = (req,res,next) => {
             message: "quantity must be a positive number"
         })
        }
+
+       next();
 }
 
 export {validateCreateStockTransfer}

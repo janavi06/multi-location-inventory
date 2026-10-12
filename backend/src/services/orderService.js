@@ -69,8 +69,8 @@ const createOrder = async (locationId, items) => {
         const orderResult = await client.query(
             `
         INSERT INTO orders (
-        lcoation_id,
-        stauts,
+        location_id,
+        status,
         total_amount
         )
         VALUES ($1, $2, $3)
@@ -172,7 +172,7 @@ const createOrder = async (locationId, items) => {
     quantity,
     previous_quantity,
     new_quantity,
-    refrence
+    reference
     ) 
     VALUES ($1, $2, $3, $4, $5, $6);
     `,

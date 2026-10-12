@@ -1,4 +1,5 @@
-import pool from "../../config/db";
+import pool from "../../config/db.js";
+import AppError from "../utils/AppError.js";
 
 const createStockTransfer = async (
     sourceInventoryId,

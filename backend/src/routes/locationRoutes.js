@@ -6,13 +6,11 @@ import { getLocationsController, createLocationController,
 
  } from "../controllers/locationController.js";
 
- import { createLocationController } from "../controllers/locationController.js";
 import { validateCreateLocation,
     validateUpdateLocation
  } from "../middleware/locationValidation.js";
 
- import { valdiateId } from "../middleware/idValidation.js";
-
+import valdiateId from "../middleware/idValidation.js";
 const router = express.Router();
 
 router.get("/",getLocationsController);

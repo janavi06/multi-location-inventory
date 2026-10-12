@@ -1,4 +1,4 @@
-import pool from "../../config/db";
+import pool from "../../config/db.js";
 
 const getUsers = async () => {
     const result = await pool.query(

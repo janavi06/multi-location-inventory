@@ -10,17 +10,22 @@ import { validateCreateProduct,
     validateUpdateProduct
  } from "../middleware/productValidation.js";
 
- import { validateId } from "../middleware/idValidation.js";
-
- import authMiddleware from "../middleware/authMiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js"
 import { requireRole } from "../middleware/roleMiddleware.js";
+import valdiateId from "../middleware/idValidation.js";
 
 const router = express.Router();
 
 router.get(
+    "/",
+    authMiddleware,
+    getProductsController
+);
+
+router.get(
     "/:id",
     authMiddleware,
-    validateId,
+    valdiateId,
     getProductByIdController
 );
 
@@ -32,14 +37,14 @@ router.post(
     validateCreateProduct,
     createProductController
 );
-router.get("/:id", validateId,
+router.get("/:id", valdiateId,
      getProductByIdController);
 
 router.patch(
     "/:id",
     authMiddleware,
     requireRole("ADMIN", "MANAGER"),
-    validateId,
+    valdiateId,
     validateUpdateProduct,
     updateProductController
 );
@@ -48,7 +53,7 @@ router.delete(
     "/:id",
     authMiddleware,
     requireRole("ADMIN"),
-    validateId,
+    valdiateId,
     deactivateProductController
 );
 

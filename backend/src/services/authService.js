@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import pool from "../../config/db.js";
 import AppError from "../utils/AppError.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -31,7 +31,7 @@ const locationResult = await pool.query(
     `
     SELECT id
     FROM locations
-    WHERE id = $1;
+    WHERE id = $1
     AND is_active = TRUE;
     `,
     [userLocationId]

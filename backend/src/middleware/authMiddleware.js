@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-import AppError from "../utils/AppError";
+import AppError from "../utils/AppError.js"
+
 
 const authMiddleware = (req,res,next) => {
 
@@ -28,3 +29,5 @@ next();
         throw new AppError("Invalid or expired token", 401);
 }
 }
+
+export default authMiddleware

@@ -75,7 +75,7 @@ const validateLogin = (req, res, next) => {
 
     const { email, password } = req.body;
 
-    if (!typeof email !== "string"){
+    if (typeof email !== "string"){
         return res.status(400).json({
             message: "Email must be string"
         })

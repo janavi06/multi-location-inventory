@@ -1,13 +1,12 @@
 import express from "express";
-import {
-    createOrderController, getOrderByIdController,
+import { createOrderController, getOrderByIdController,
     getOrdersController, cancelOrderController,
-    confirmOrderController
+    confirmOrderControler
 
-} from "../controllers/orderController.js";
+ } from "../controllers/orderController.js";
 
-import { validateCreateOrder } from "../middleware/orderValidation.js";
-import { validateId } from "../middleware/idValidation.js";
+ import { validateCreateOrder } from "../middleware/orderValidation.js";
+import  validateId  from "../middleware/idValidation.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import { requireLocation } from "../middleware/locationMiddleware.js";
 import { requireRole } from "../middleware/roleMiddleware.js";
@@ -45,9 +44,8 @@ router.patch(
 router.patch(
     "/:id/confirm",
     authMiddleware,
-    requiredRole("ADMIN", "MANAGER"),
     validateId,
-    confirmOrderController
+    confirmOrderControler
 );
 
 

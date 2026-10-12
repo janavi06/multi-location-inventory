@@ -6,7 +6,6 @@ import {
 } from "../controllers/authController.js";
 import { validateRegister, validateLogin } from "../middleware/authValidation.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-
 const router = express.Router();
 
 

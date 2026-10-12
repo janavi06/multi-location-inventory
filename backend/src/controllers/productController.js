@@ -16,13 +16,14 @@ res.status(200).json(products);
 // create product
 const createProductController = async (req,res) => {
 
-    const {name, sku, unit, low_stock_threshold} = req.body;
+    const {name, sku, unit, lowStockThreshold,price} = req.body;
 
     const product = await createProduct(
         name,
         sku,
         unit,
-        low_stock_threshold
+        lowStockThreshold,
+        price
     );
     res.status(201).json(product);
 }
@@ -38,12 +39,13 @@ const getProductByIdController = asyncHandler(async (req, res) => {
 const updateProductController = async (req, res) => {
     const {id} = req.params;
 
-    const {name, unit, low_stock_threshold} = req.body;
+    const {name, unit, lowStockThreshold, price} = req.body;
 
     const product = await updateProduct(
         name,
         unit,
-        low_stock_threshold,
+        lowStockThreshold,
+        price,
         id
     )
     res.status(200).json(product);
